@@ -1,2 +1,4 @@
 # Launch configuration
 .vscode
+
+*__pycache__
