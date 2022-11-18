@@ -15,10 +15,12 @@
 
 ## Note
 
-### Non-blocking socket
+### Blocking socket
+
+Socket 有三種模式，分別為 Blocking、Non-Blocking、Timeout 三種，Socket 預設為 Blocking
 
 Server 的 socket 使用 accept 方法等待 client 連線，accept 會向作業系統呼叫 System call，此時程式將會停留在 accept()，直到有來自 client 的連線連入，因此這樣的形式被稱為 Blocking socket
 
 但這樣有一個缺點，若使用者想要在此時中斷程式，通常是按 Ctrl+C 來向程式傳送 SIGINT 使程式中斷，但在 Python3.5 之後，accept 的機制變為當收到 SIGINT 信號時會重新呼叫 System call 而不是直接中斷，因此造成程式無法關閉
 
-目前採用的方法為使用 Non-blocking socket，顧名思義就是當 accept 時不會等待連線連入，但當沒有連線連入時會產生錯誤，因此可以使用一個名為 select 的 System call
+目前採用的方式為另開一個 Thread 負責 socket 連線溝通，當 SocketThread 開始執行，Main Thread 便進入 sleep，當使用者愈中斷程式時，便會在 Main Thread 呼叫 server.close()，使 SocketThread 結束執行
