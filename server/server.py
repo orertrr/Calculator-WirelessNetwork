@@ -1,15 +1,12 @@
-import socket
 import sys
+import time
+from socket_thread import SocketThread
 
 strUsage = """Next-Generation Wireless Network HW2-Server:
 
 Usage:
 \tserver.py --port port_number
 """
-
-HOST_IP = "0.0.0.0"
-PORT = 10000
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def main(argv):
     if len(argv) == 1:
@@ -20,31 +17,19 @@ def main(argv):
         print(f"Unknown argument: {argv[1]}")
         return
 
-    PORT = int(argv[2])
+    port = int(argv[2])
 
-    s.bind(("0.0.0.0", PORT))
-    # Max number of connection = 1
-    print(f"Listen on port {PORT}")
-    s.listen(1)
+    thread = SocketThread(port)
+    thread.start()
 
+    # Main thread sleep
     while True:
         try:
-            conn, _ = s.accept()
-            while True:
-                received = conn.recv(1024)
-                if len(received) == 0:
-                    conn.close()
-                    break
-                print(received.decode())
-
-                conn.send("test response".encode())
-        # When user press Ctrl+C
+            time.sleep(1)
         except KeyboardInterrupt:
-            conn.close()
-
-    s.close()
-    print("Server closed")
-
+            thread.server.close()
+            print("Server closed")
+            return
 
 if __name__ == "__main__":
     main(sys.argv)
