@@ -4,7 +4,7 @@
 
 ## Progress
 
-- [ ] 建立 TCP 連線環境
+- [x] 建立 TCP 連線環境
 - [ ] Mode2 上傳檔案內容
 - [ ] 將 Formula 拆分成 Tokens
   - [ ] Trim
