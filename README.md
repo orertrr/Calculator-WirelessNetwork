@@ -6,12 +6,18 @@
 
 - [x] 建立 TCP 連線環境
 - [ ] Mode2 上傳檔案內容
-- [ ] 將 Formula 拆分成 Tokens
-  - [ ] Trim
-  - [ ] 將 數字 及 運算子拆開
+- [x] 將 Formula 拆分成 Tokens
+  - [x] Trim
+  - [x] 將 數字 及 運算子拆開
 - [ ] 中序式轉後序式
 - [ ] 計算
 - [ ] 判斷錯誤
+
+## Test
+
+```bash
+$ python -m unittest test.test_calculator -v
+```
 
 ## Note
 
