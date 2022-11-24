@@ -46,4 +46,35 @@ class FormulaToTokensTest(unittest.TestCase):
         self.assertRaises(calculator.CalculatorInvalidTokenError, calculator.formula_to_tokens, "1*.7$")
 
 class InfixToPostfixTest(unittest.TestCase):
-    pass
+    def test_normal1(self):
+        arg = [1.0, "+", 2.0]
+        expected = [1.0, 2.0, "+"]
+        result = calculator.infix_to_postfix(arg)
+        self.assertEqual(expected, result)
+
+    def test_normal2(self):
+        arg = [1.0, "+", 2.0, "*", 3.0]
+        expected = [1.0, 2.0, 3.0, "*", "+"]
+        result = calculator.infix_to_postfix(arg)
+        self.assertEqual(expected, result)
+
+    def test_normal3(self):
+        arg = [1.0, "*", 2.0, "+", 3.0]
+        expected = [1.0, 2.0, "*", 3.0, "+"]
+        result = calculator.infix_to_postfix(arg)
+        self.assertEqual(expected, result)
+
+    def test_normal4(self):
+        arg = [5.0, "*", 2.0, "^", 2.0, "%", 3.0]
+        expected = [5.0, 2.0, 2.0, "^", "*", 3.0, "%"]
+        result = calculator.infix_to_postfix(arg)
+        self.assertEqual(expected, result)
+
+    def test_bracket(self):
+        arg = [1.0, "*", "(", 2.0, "+", 3.0, ")"]
+        expected = [1.0, 2.0, 3.0, "+", "*"]
+        result = calculator.infix_to_postfix(arg)
+        self.assertEqual(expected, result)
+
+    def test_invalid_bracket(self):
+        self.assertRaises(calculator.CalculatorInvalidFormulaError, calculator.infix_to_postfix, [1.0, "*", 2.0, "+", 3.0, ")"])

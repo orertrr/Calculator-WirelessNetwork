@@ -9,9 +9,21 @@
 - [x] 將 Formula 拆分成 Tokens
   - [x] Trim
   - [x] 將 數字 及 運算子拆開
-- [ ] 中序式轉後序式
+- [x] 中序式轉後序式
 - [ ] 計算
 - [ ] 判斷錯誤
+
+## Run
+
+**Server:**
+```bash
+$ python server/server.py --port port_number
+```
+
+**Client:**
+```bash
+$ python client/client.py --host host_ip --port port_number
+```
 
 ## Test
 
