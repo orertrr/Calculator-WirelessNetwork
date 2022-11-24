@@ -15,6 +15,18 @@ class FormulaToTokensTest(unittest.TestCase):
         result = calculator.formula_to_tokens(arg)
         self.assertEqual(result, expected)
 
+    def test_normal3(self):
+        arg = "3+4-5.5*6/7"
+        expected = [3, "+", 4, "-", 5.5, "*", 6, "/", 7]
+        result = calculator.formula_to_tokens(arg)
+        self.assertEqual(result, expected)
+
+    def test_normal4(self):
+        arg = "1+2"
+        expected = [1/3*3, "+", 2]
+        result = calculator.formula_to_tokens(arg)
+        self.assertEqual(result, expected)
+
     def test_formula_with_space(self):
         arg = "1 + 2"
         expected = [1, "+", 2]
@@ -31,8 +43,7 @@ class FormulaToTokensTest(unittest.TestCase):
 
     # Invalid tokens exception test
     def test_invalid_token(self):
-        self.assertRaises(calculator.CalculatorInvalidTokenError, calculator.formula_to_tokens, "1*.7")
+        self.assertRaises(calculator.CalculatorInvalidTokenError, calculator.formula_to_tokens, "1*.7$")
 
-suite = unittest.TestLoader().loadTestsFromTestCase(FormulaToTokensTest)
-runner = unittest.TextTestRunner()
-runner.run(suite)
+class InfixToPostfixTest(unittest.TestCase):
+    pass

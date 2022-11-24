@@ -29,7 +29,7 @@ class TokenType(enum.IntEnum):
 def __get_tokentype(char):
     if char in "+-*/%^":
         return TokenType.OPERATOR
-    if char in "0123456789":
+    if char in "0123456789.":
         return TokenType.NUMERIC
     if char == "(":
         return TokenType.LEFT_BRACKET
@@ -39,6 +39,13 @@ def __get_tokentype(char):
         return TokenType.SPACE
     
     return TokenType.INVALID
+
+def __isnumber(token):
+    for char in token:
+        if char not in "0123456789.":
+            return False
+
+    return True
 
 def formula_to_tokens(formula: str) -> list:
     """
@@ -79,8 +86,8 @@ def formula_to_tokens(formula: str) -> list:
                 while len(queue) > 0:
                     token += queue.pop(0)
                 if token != "":
-                    if token.isdigit():
-                        tokens.append(int(token))
+                    if __isnumber(token):
+                        tokens.append(float(token))
                     else:
                         tokens.append(token)
                         
@@ -92,11 +99,14 @@ def formula_to_tokens(formula: str) -> list:
         while len(queue) > 0:
             token += queue.pop(0)
         if token != "":
-            if token.isdigit():
-                tokens.append(int(token))
+            if __isnumber(token):
+                tokens.append(float(token))
             else:
                 tokens.append(token)
 
     queue.append(char)
 
     return tokens
+
+def infix_to_postfix(tokens):
+    pass
