@@ -159,4 +159,37 @@ def infix_to_postfix(tokens):
     return result
 
 def compute_postfix(tokens):
-    pass
+    stack = []
+    for token in tokens:
+        if type(token) != float:
+            if len(stack) < 2:
+                raise CalculatorInvalidFormulaError("Need two operants")
+
+            operant_right = stack.pop()
+            operant_left = stack.pop()
+            if token == "+":
+                stack.append(operant_left + operant_right)
+            elif token == "-":
+                stack.append(operant_left - operant_right)
+            elif token == "*":
+                stack.append(operant_left * operant_right)
+            elif token == "/":
+                if operant_right == 0:
+                    raise CalculatorInvalidFormulaError("Can't divided 0")
+                stack.append(operant_left / operant_right)
+            elif token == "%":
+                stack.append(operant_left % operant_right)
+            elif token == "^":
+                stack.append(operant_left ** operant_right)
+        else:
+            stack.append(token)
+
+    return stack[0]
+
+def compute(formula):
+    try:
+        infix = formula_to_tokens(formula)
+        postfix = infix_to_postfix(infix)
+        return f"{compute_postfix(postfix):.2f}"
+    except:
+        return "invalid input"

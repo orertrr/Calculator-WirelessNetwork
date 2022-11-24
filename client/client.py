@@ -21,13 +21,6 @@ def main(argv):
         elif argv[index] == "--port":
             port = int(argv[index + 1])
 
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((host_IP, port))
-    except:
-        print(f"Can't connect to the server.")
-        return
-
     while True:
         print("Mode1: single-line process")
         print("Mode2: batch process")
@@ -38,32 +31,45 @@ def main(argv):
             return
 
         if mode == "1":
-            mode1(s)
+            mode1(host_IP, port)
+        elif mode == "2":
+            # mode2(host_IP, port)
+            print("Not implemented")
+        else:
+            print("Invalid mode")
 
-        if mode == "2":
-            mode2(s)
+def mode1(host, port):
+    print(f"Connect to server({host}:{port})")
+    try:
+        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.connect((host, port))
+    except:
+        print(f"Can't connect to the server.")
+        return
 
-    
-
-def mode1(s):
+    print("Enter your formula(or 'q' to quit)")
     while True:
+        print()
         message = input("> ")
 
         if message == "q":
             print("Quit mode1")
             break
-
+        
         # Default encoding: UTF-8
-        s.send(message.encode())
-        received = s.recv(1024)
+        server.send(message.encode())
+        print(f"Send: {message}")
 
         # Default decoding: UTF-8
-        print(received.decode())
+        received = server.recv(1024).decode()
+        print(f"Received: {received}")
 
-    s.close()
+    server.close()
+    print("Connection closed")
+    print()
 
-def mode2(s):
-    return
+def mode2(host, port):
+    pass
 
 if __name__ == "__main__":
     main(sys.argv)

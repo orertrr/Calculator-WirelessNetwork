@@ -78,3 +78,68 @@ class InfixToPostfixTest(unittest.TestCase):
 
     def test_invalid_bracket(self):
         self.assertRaises(calculator.CalculatorInvalidFormulaError, calculator.infix_to_postfix, [1.0, "*", 2.0, "+", 3.0, ")"])
+
+class ComputePostfixTest(unittest.TestCase):
+    def test_normal1(self):
+        arg = [1.0, 2.0, "+"]
+        expected = 3
+        result = calculator.compute_postfix(arg)
+        self.assertEqual(result, expected)
+
+    def test_normal2(self):
+        arg = [1.0, 2.0, 3.0, "*", "+"]
+        expected = 7
+        result = calculator.compute_postfix(arg)
+        self.assertEqual(result, expected)
+
+    def test_normal3(self):
+        arg = [1.0, 2.0, "*", 3.0, "+"]
+        expected = 5
+        result = calculator.compute_postfix(arg)
+        self.assertEqual(result, expected)
+
+    def test_normal4(self):
+        arg = [5.0, 2.0, 2.0, "^", "*", 3.0, "%"]
+        expected = 2
+        result = calculator.compute_postfix(arg)
+        self.assertEqual(result, expected)
+    
+    def test_divided_by_zero(self):
+        self.assertRaises(calculator.CalculatorInvalidFormulaError, calculator.compute_postfix, [1, 0, "/"])
+
+class ComputeTest(unittest.TestCase):
+    def test_normal1(self):
+        arg = "1+2"
+        expected = "3.00"
+        result = calculator.compute(arg)
+        self.assertEqual(result, expected)
+
+    def test_normal2(self):
+        arg = "5*2^2%3"
+        expected = "2.00"
+        result = calculator.compute(arg)
+        self.assertEqual(result, expected)
+
+    def test_normal3(self):
+        arg = "2*9%5+2*8/4"
+        expected = "7.00"
+        result = calculator.compute(arg)
+        self.assertEqual(result, expected)
+
+    def test_normal4(self):
+        arg = "12+5*8+(9.12-7.774)*8"
+        expected = "62.77"
+        result = calculator.compute(arg)
+        self.assertEqual(result, expected)
+
+    def test_divided_by_zero(self):
+        arg = "1/0"
+        expected = "invalid input"
+        result = calculator.compute(arg)
+        self.assertEqual(result, expected)
+
+    def test_invalid_formula(self):
+        arg = "59-*/6"
+        expected = "invalid input"
+        result = calculator.compute(arg)
+        self.assertEqual(result, expected)

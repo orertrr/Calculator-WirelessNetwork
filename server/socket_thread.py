@@ -1,4 +1,5 @@
 from threading import Thread
+import calculator
 import socket
 
 class SocketThread(Thread):
@@ -25,7 +26,9 @@ class SocketThread(Thread):
                         client.close()
                         break
                     receivedMessage = receivedBytes.decode()
-                    print(f"Received massage: {receivedMessage}")
-                    client.send(f"Send: {receivedMessage}".encode())
+                    print(f"Received: {receivedMessage}")
+                    result = calculator.compute(receivedMessage)
+                    print(f"Send: {result}")
+                    client.send(result.encode())
         except:
             pass
