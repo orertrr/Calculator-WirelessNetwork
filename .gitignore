@@ -1,6 +1,5 @@
 # Launch configuration
 .vscode
-env
 
 *__pycache__
 
