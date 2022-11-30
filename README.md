@@ -1,5 +1,7 @@
 # Next-Generation Wireless Network HW2
 
+使用 Python 3.7.9
+
 透過 TCP Socket 建立一個 Client-Server 架構的線上版計算機
 
 ## Progress
