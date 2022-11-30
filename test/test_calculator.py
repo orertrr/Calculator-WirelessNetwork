@@ -132,6 +132,12 @@ class ComputeTest(unittest.TestCase):
         result = calculator.compute(arg)
         self.assertEqual(result, expected)
 
+    def test_big_number(self):
+        arg = "1111111111111111111111111111111111111+1111111111111111111111111111111111111"
+        expected = "2222222222222222222222222222222222222.00"
+        result = calculator.compute(arg)
+        self.assertEqual(result, expected)
+
     def test_divided_by_zero(self):
         arg = "1/0"
         expected = "invalid input"
