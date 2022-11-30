@@ -13,6 +13,7 @@ class SocketThread(Thread):
     def run(self):
         self.server.bind(("0.0.0.0", self.port))
         print(f"Server listen on port {self.port}")
+        print("Press 'Ctrl+c' to close server")
 
         # Set maximum number of connection to 1
         self.server.listen(1)
@@ -20,7 +21,6 @@ class SocketThread(Thread):
         try:    
             while True:
                 print("Waiting for connection...")
-                print("Press 'Ctrl+c' to close server")
                 client, _ = self.server.accept()
 
                 mode = client.recv(1024).decode()
