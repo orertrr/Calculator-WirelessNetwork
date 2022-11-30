@@ -103,8 +103,6 @@ def formula_to_tokens(formula):
             else:
                 tokens.append(token)
 
-    queue.append(char)
-
     return tokens
 
 def __get_level(operator):

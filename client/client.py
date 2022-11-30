@@ -81,19 +81,15 @@ def batch_mode(host, port):
 
     server.send("batch mode".encode())
     time.sleep(0.01)
+    server.send(os.linesep.encode())
+    time.sleep(0.01)
     
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Testcase.txt")
-    with open(path, "r") as file:
-        for line in file:
-            # Get rid of '\n'
-            if line[-1] == "\n":
-                line = line[:-1]
-            
-            if line == "":
-                continue
-
-            server.send(line.encode())
-            time.sleep(0.01)
+    with open(path, "rb") as file:
+        line = file.read(1024)
+        while len(line) != 0:
+            server.send(line)
+            line = file.read(1024)
 
     server.close()
 

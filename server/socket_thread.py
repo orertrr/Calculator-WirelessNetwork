@@ -28,8 +28,9 @@ class SocketThread(Thread):
                 elif mode == "batch mode":
                     self.batch_mode(client)
 
-        except:
-            pass
+        except Exception as e:
+            print(e)
+            return
 
     def single_line_mode(self, client):
         while True:
@@ -47,7 +48,16 @@ class SocketThread(Thread):
         print("Quit")
         print()
 
-    def batch_mode(self, client):
+    def batch_mode(self, client: socket.socket):
+        # Get client's line separator
+        client_lineseparator = client.recv(2).decode()
+
+        # Enqueue:        char_queue + chars
+        #
+        # Dequeue(index): result = char_queue[:index]
+        #                 char_queue = char_queue[index (+ offset):]
+        #                 return result
+        char_queue = ""
         formulas = []
         while True:
             receivedBytes = client.recv(1024)
@@ -56,8 +66,22 @@ class SocketThread(Thread):
                 break
 
             receivedMessage = receivedBytes.decode()
-            print(f"Received: {receivedMessage}")
-            formulas.append(receivedMessage)
+            char_queue = char_queue + receivedMessage # Enqueue
+
+            newline_index = char_queue.find(client_lineseparator)
+            while newline_index >= 0:
+                # Dequeue(newline_index)
+                formulas.append(char_queue[:newline_index])
+                char_queue = char_queue[newline_index + len(client_lineseparator):]
+                newline_index = char_queue.find(client_lineseparator)
+        
+        if len(char_queue) > 0:
+            formulas.append(char_queue)
+
+        for formula in formulas:
+            if formula[-1] == "\n":
+                formula = formula[:-1]
+            print(f"Received: {formula}")
 
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Ans.txt")
         with open(path, "w") as file:
