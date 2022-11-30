@@ -1,4 +1,5 @@
 import enum
+import decimal
 
 class CalculatorInvalidTokenError(Exception):
     def __init__(self, token, message = "Invalid TokenType") -> None:
@@ -85,10 +86,7 @@ def formula_to_tokens(formula):
                 while len(queue) > 0:
                     token += queue.pop(0)
                 if token != "":
-                    if __isnumber(token):
-                        tokens.append(float(token))
-                    else:
-                        tokens.append(token)
+                    tokens.append(token)
                         
         queue.append(char)
 
@@ -98,10 +96,7 @@ def formula_to_tokens(formula):
         while len(queue) > 0:
             token += queue.pop(0)
         if token != "":
-            if __isnumber(token):
-                tokens.append(float(token))
-            else:
-                tokens.append(token)
+            tokens.append(token)
 
     return tokens
 
@@ -123,7 +118,7 @@ def infix_to_postfix(tokens):
     stack = []
 
     for token in tokens:
-        if type(token) == float:
+        if __isnumber(token):
             result.append(token)
             continue
 
@@ -159,35 +154,44 @@ def infix_to_postfix(tokens):
 def compute_postfix(tokens):
     stack = []
     for token in tokens:
-        if type(token) != float:
+        if not __isnumber(token):
             if len(stack) < 2:
                 raise CalculatorInvalidFormulaError("Need two operants")
+            if len(token) > 1:
+                raise CalculatorInvalidFormulaError(f"invalid token: {token}")
 
-            operant_right = stack.pop()
-            operant_left = stack.pop()
+            operant_right = decimal.Decimal(stack.pop())
+            operant_left = decimal.Decimal(stack.pop())
+            result = decimal.Decimal()
             if token == "+":
-                stack.append(operant_left + operant_right)
+                result = operant_left + operant_right
             elif token == "-":
-                stack.append(operant_left - operant_right)
+                result = operant_left - operant_right
             elif token == "*":
-                stack.append(operant_left * operant_right)
+                result = operant_left * operant_right
             elif token == "/":
                 if operant_right == 0:
                     raise CalculatorInvalidFormulaError("Can't divided 0")
-                stack.append(operant_left / operant_right)
+                result = operant_left / operant_right
             elif token == "%":
-                stack.append(operant_left % operant_right)
+                result = operant_left % operant_right
             elif token == "^":
-                stack.append(operant_left ** operant_right)
+                result = operant_left ** operant_right
+
+            stack.append(result)
         else:
             stack.append(token)
 
-    return stack[0]
+    return stack[0].quantize(decimal.Decimal(".01"))
 
 def compute(formula):
     try:
+        # Set number of digits of integer part = 100
+        decimal.getcontext().prec = 102
+        decimal.getcontext().rounding = decimal.ROUND_HALF_DOWN
+        decimal.Decimal().quantize(decimal.Decimal(".01"))
         infix = formula_to_tokens(formula)
         postfix = infix_to_postfix(infix)
-        return f"{compute_postfix(postfix):.2f}"
+        return f"{compute_postfix(postfix)}"
     except:
         return "invalid input"

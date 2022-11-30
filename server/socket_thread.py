@@ -20,6 +20,7 @@ class SocketThread(Thread):
         try:    
             while True:
                 print("Waiting for connection...")
+                print("Press 'Ctrl+c' to close server")
                 client, _ = self.server.accept()
 
                 mode = client.recv(1024).decode()
@@ -27,7 +28,8 @@ class SocketThread(Thread):
                     self.single_line_mode(client)
                 elif mode == "batch mode":
                     self.batch_mode(client)
-
+        except OSError:
+            return
         except Exception as e:
             print(e)
             return
