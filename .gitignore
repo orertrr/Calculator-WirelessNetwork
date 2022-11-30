@@ -1,6 +1,8 @@
 # Launch configuration
 .vscode
+env
 
 *__pycache__
 
 server/Ans.txt
+*.zip
